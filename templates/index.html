@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Website Navigator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 400px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    button {
+      background-color: #6c63ff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #574bff;
+      transform: scale(1.05);
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #fff;
+      min-height: 20px;
+    }
+
+    .thinking {
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>AI Website Navigator</h1>
+    <input type="text" id="userInput" placeholder="Tell me where you want to go">
+    <button onclick="askAI()">Go</button>
+    <p id="response"></p>
+  </div>
+
+  <script>
+    async function askAI() {
+      const userQuery = document.getElementById("userInput").value.trim();
+      const responseText = document.getElementById("response");
+      
+      if (!userQuery) {
+        responseText.innerText = "Please type something first!";
+        return;
+      }
+
+      responseText.innerText = "Thinking...";
+      responseText.classList.add("thinking");
+
+      const res = await fetch("/api/ai-route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userQuery })
+      });
+
+      const data = await res.json();
+      responseText.classList.remove("thinking");
+
+      if (data.route) {
+        responseText.innerText = "Redirecting to " + data.route + "...";
+        setTimeout(() => window.location.href = data.route, 1500);
+      } else {
+        responseText.innerText = data.message || "Sorry, I couldn’t understand that.";
+      }
+    }
+  </script>
+
+</body>
+</html>
