@@ -4,10 +4,11 @@ from flask import Flask, request, jsonify, render_template, render_template_stri
 from openai import OpenAI
 
 # Load environment
-load_dotenv()
+# load_dotenv()
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 # ---------- GENERAL USER ROUTES ----------
 general_user_routes = {
@@ -193,8 +194,8 @@ def ai_route():
         return jsonify({"route": None, "message": "Sorry, something went wrong understanding your intent."})
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
 
 
 
